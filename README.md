@@ -96,3 +96,24 @@ These pipelines were combined using a **ColumnTransformer**, creating a reusable
 - **Automated** workflow  
 - **Reproducible** results  
 - **Production-ready** pipeline
+
+
+
+## Step 5 - Model Trainer Implementation
+I built a **Model Trainer module** to automate model training, evaluation, and saving in my ML pipeline.
+
+First, I created a configuration class using `@dataclass` to store the path where the trained model will be saved (`artifacts/model.pkl`).
+
+Inside the `ModelTrainer` class, I did the following:
+
+1️⃣ **Split data:** The method `initiate_model_trainer` takes the processed `train_array` and `test_array`, and splits them into input features and target labels for training and testing.
+
+2️⃣ **Defined models and hyperparameters:** I included multiple regressors—Random Forest, Decision Tree, Gradient Boosting, Linear Regression, XGBoost, and AdaBoost—and specified their hyperparameter grids.
+
+3️⃣ **Model evaluation and selection:** I call a helper function `evaluate_models` to train and evaluate each model, then select the one with the highest R² score.
+
+4️⃣ **Save the best model:** If the best model passes a threshold, I save it as a pickle file so it can be used later for inference.
+
+5️⃣ **Final evaluation:** I predict on the test set and calculate the R² score to confirm the model’s performance.
+
+**In short:** This module **automates model training, evaluation, and storage**, making the pipeline **modular, reproducible, and production-ready**.
