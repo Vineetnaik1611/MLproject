@@ -28,3 +28,71 @@ ii. Development Environment
 3. Create 3 important files in src - 1. logger.py for logging, 2. exception.py  for exception handling, 3. utils.py (any functionalities to be uised in entire project can be written here)
 4. Created a custom exception system that extracts full traceback details (file name, line number, and error message) and formats them into a readable error description. (exception.py)
 5. Created a logging setup that generates a new timestamped log file inside a logs/ folder every time the program runs. (logger.py)
+
+
+## Step 3   Data Ingestion Module 
+
+I built a **Data Ingestion module** that automates the first step of the ML pipeline.
+
+The ingestion component handles four key tasks:
+
+1. **Reads the raw dataset** from the source location.  
+2. **Creates a structured artifacts directory** to store all generated files.  
+3. **Saves the raw data** to ensure reproducibility.  
+4. **Performs a train–test split** and saves the split datasets separately.
+
+I encapsulated this logic within a `DataIngestion` class and used a `DataIngestionConfig` dataclass to manage file paths cleanly.  
+Finally, the ingestion function **returns the paths of the train and test files**, which are then passed to the data transformation and model training modules.
+
+This approach keeps the pipeline **modular, reproducible, and easy to maintain**.
+
+
+###### important questions
+1. What is @dataclass
+
+@dataclass is a Python decorator that automatically generates the init and other boilerplate methods for classes that only store data, making the code cleaner and easier to maintain.
+
+
+## Step 4 Data transformation using pipelines Implementation
+
+### Data Transformation Module 
+
+I built a **Data Transformation module** to preprocess the dataset before model training.
+
+First, I created a configuration class using `@dataclass` to store the path where the preprocessor object (pickle file) will be saved.
+
+Then, inside the `DataTransformation` class, I performed three main tasks:
+
+---
+
+### 1️⃣ Built Preprocessing Pipelines
+
+- **Numerical columns:** Used a pipeline with **median imputation** and **StandardScaler**.  
+- **Categorical columns:** Used **most-frequent imputation**, **One-Hot Encoding**, and **scaling (without centering)**.  
+
+These pipelines were combined using a **ColumnTransformer**, creating a reusable preprocessing object.
+
+---
+
+### 2️⃣ Applied Preprocessing to Train and Test Sets
+
+- Loaded the train and test datasets.  
+- Split them into **input features** and **target**.  
+- Fitted the preprocessor on the training data and transformed both train and test sets.  
+- Used `np.c_` to **combine processed features with the target arrays**.
+
+---
+
+### 3️⃣ Saved the Preprocessing Object
+
+- Saved the fitted preprocessor as a **pickle file** in the `artifacts` folder.  
+- This ensures the same transformations can be applied during inference.
+
+---
+
+### ✅ Benefits
+
+- **Consistent** preprocessing  
+- **Automated** workflow  
+- **Reproducible** results  
+- **Production-ready** pipeline
